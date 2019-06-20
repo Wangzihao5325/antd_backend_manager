@@ -129,6 +129,7 @@ export default {
           name: 'testPage',
           icon: 'man',
           component: './test/index',
+          authority: ['admin', 'user'],
         },
       ],
     },

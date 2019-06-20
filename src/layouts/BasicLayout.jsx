@@ -13,6 +13,8 @@ import { formatMessage } from 'umi-plugin-react/locale';
 import { isAntDesignPro } from '@/utils/utils';
 import logo from '../assets/logo.svg';
 
+import Footer from '../components/Footer/index';
+
 /**
  * use Authorized check all menu item
  */
@@ -23,28 +25,8 @@ const menuDataRender = menuList =>
   });
 
 const footerRender = (_, defaultDom) => {
-  if (!isAntDesignPro()) {
-    return defaultDom;
-  }
-
   return (
-    <>
-      {defaultDom}
-      <div
-        style={{
-          padding: '0px 24px 24px',
-          textAlign: 'center',
-        }}
-      >
-        <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
-          <img
-            src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg"
-            width="82px"
-            alt="netlify logo"
-          />
-        </a>
-      </div>
-    </>
+    <Footer />
   );
 };
 
