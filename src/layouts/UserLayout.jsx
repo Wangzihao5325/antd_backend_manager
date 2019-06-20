@@ -1,4 +1,5 @@
 import { DefaultFooter, getMenuData, getPageTitle } from '@ant-design/pro-layout';
+import { Row, Col } from 'antd';
 import DocumentTitle from 'react-document-title';
 import Link from 'umi/link';
 import React from 'react';
@@ -7,6 +8,8 @@ import { connect } from 'dva';
 import { formatMessage } from 'umi-plugin-react/locale';
 import logo from '../assets/logo.svg';
 import styles from './UserLayout.less';
+
+import Footer from '../components/Footer';
 
 const UserLayout = props => {
   const {
@@ -44,7 +47,7 @@ const UserLayout = props => {
           </div>
           {children}
         </div>
-        <div style={{ alignSelf: 'center', color: 'rgb(0,0,0,0.45)', marginBottom: 30 }}>Copyright © 2019 站群二组出品  ( Based on Antd Pro )</div>
+        <Footer />
       </div>
     </DocumentTitle>
   );
