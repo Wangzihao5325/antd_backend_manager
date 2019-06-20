@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col, Input, Icon, Button, message } from 'antd';
 import { setAuthority } from '../../utils/authority';
-import Authorized from '../../utils/Authorized';
+import { reloadAuthorized } from '../../utils/Authorized';
 import router from 'umi/router';
 
 const USER_ICON = <Icon type="user" />;
@@ -38,7 +38,7 @@ export default class Login extends Component {
                                 allowClear
                                 addonBefore={PASSWORD_ICON}
                                 placeholder='请输入密码'
-                                onChange={this.handleUserNameChange}
+                                onChange={this.handlePasswordChange}
                             />
                         </div>
                     </Col>
@@ -68,9 +68,17 @@ export default class Login extends Component {
     }
 
     login = () => {
+        // setAuthority('admin');
+        // console.log(router);
+        // router.push('/');
         if (InputReg.userName === 'admin' && InputReg.password === 'admin') {
-            setAuthority('user');
-            router.push('/');
+            const hide = message.loading('登陆成功', 0);
+            setAuthority('admin');
+            setTimeout(() => {
+                hide();
+                reloadAuthorized();
+                router.push('/');
+            }, 1000);
         } else {
             message.warning('请输入正确的账号/密码！');
         }
