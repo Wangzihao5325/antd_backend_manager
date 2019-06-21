@@ -78,18 +78,6 @@ class Login extends Component {
                 password: InputReg.password
             }
         });
-        //console.log(this.props.login);
-        // if (InputReg.userName === 'admin' && InputReg.password === 'admin') {
-        //     const hide = message.loading('登陆成功', 0);
-        //     setAuthority('admin');
-        //     setTimeout(() => {
-        //         hide();
-        //         reloadAuthorized();
-        //         router.push('/');
-        //     }, 1000);
-        // } else {
-        //     message.warning('请输入正确的账号/密码！');
-        // }
     }
 }
 
