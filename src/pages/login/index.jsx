@@ -68,9 +68,6 @@ export default class Login extends Component {
     }
 
     login = () => {
-        // setAuthority('admin');
-        // console.log(router);
-        // router.push('/');
         if (InputReg.userName === 'admin' && InputReg.password === 'admin') {
             const hide = message.loading('登陆成功', 0);
             setAuthority('admin');
