@@ -1,5 +1,5 @@
 const SERVICES = {
-    domain: 'http://c04f1c7d.ngrok.io',
+    domain: 'http://6ae057b5.ngrok.io',
     token: null
 };
 
