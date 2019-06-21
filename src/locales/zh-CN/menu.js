@@ -1,4 +1,6 @@
 export default {
+  'menu.websiteOne': '撸一发',
+  'menu.websiteTwo': '第二站',
   'menu.welcome': '欢迎',
   'menu.more-blocks': '更多区块',
   'menu.home': '首页',

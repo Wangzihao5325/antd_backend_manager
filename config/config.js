@@ -119,16 +119,16 @@ export default {
       routes: [
         {
           path: '/',
-          name: 'welcome',
-          icon: 'smile',
-          component: './Welcome',
+          name: 'websiteOne',
+          icon: 'chrome',
+          component: './websiteOne/index',
           authority: ['admin', 'user'],
         },
         {
-          path: '/test',
-          name: 'testPage',
-          icon: 'man',
-          component: './test/index',
+          path: '/websiteTwo',
+          name: 'websiteTwo',
+          icon: 'ie',
+          component: './websiteTwo/index',
           authority: ['admin', 'user'],
         },
       ],
