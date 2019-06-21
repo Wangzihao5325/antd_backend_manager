@@ -3,13 +3,15 @@ import { Row, Col, Input, Icon, Button, message } from 'antd';
 import { setAuthority } from '../../utils/authority';
 import { reloadAuthorized } from '../../utils/Authorized';
 import router from 'umi/router';
+import { connect } from 'dva';
+
 
 const USER_ICON = <Icon type="user" />;
 const PASSWORD_ICON = <Icon type="lock" />;
 
 const InputReg = { userName: '', password: '' };
 
-export default class Login extends Component {
+class Login extends Component {
     render() {
         return (
             <div>
@@ -68,16 +70,29 @@ export default class Login extends Component {
     }
 
     login = () => {
-        if (InputReg.userName === 'admin' && InputReg.password === 'admin') {
-            const hide = message.loading('登陆成功', 0);
-            setAuthority('admin');
-            setTimeout(() => {
-                hide();
-                reloadAuthorized();
-                router.push('/');
-            }, 1000);
-        } else {
-            message.warning('请输入正确的账号/密码！');
-        }
+        const { dispatch } = this.props;
+        dispatch({
+            type: 'login/login',
+            payload: {
+                name: InputReg.userName,
+                password: InputReg.password
+            }
+        });
+        //console.log(this.props.login);
+        // if (InputReg.userName === 'admin' && InputReg.password === 'admin') {
+        //     const hide = message.loading('登陆成功', 0);
+        //     setAuthority('admin');
+        //     setTimeout(() => {
+        //         hide();
+        //         reloadAuthorized();
+        //         router.push('/');
+        //     }, 1000);
+        // } else {
+        //     message.warning('请输入正确的账号/密码！');
+        // }
     }
 }
+
+export default connect(({ login }) => ({
+    login,
+}))(Login);

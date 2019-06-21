@@ -42,8 +42,9 @@ const errorHandler = error => {
  */
 
 const request = extend({
+  //getResponse: true,
   errorHandler,
   // 默认错误处理
-  credentials: 'include', // 默认请求是否带上cookie
+ // credentials: 'include', // 默认请求是否带上cookie,开发环境开启会引起跨域
 });
 export default request;
