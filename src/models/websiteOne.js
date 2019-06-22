@@ -7,14 +7,19 @@ const Model = {
         webSiteGlobalConfig: {}
     },
     effects: {
-        *getGlobalConfig({ payload }, { call, put }) {
-            console.log('11111');
-            // const response = yield call(fetchWebsiteOneGlobalConfig);
-            // console.log(response);
+        *getGlobalConfig(_, { call, put }) {
+            const response = yield call(fetchWebsiteOneGlobalConfig);
+            console.log(response);
+            // yield put({
+            //     type: 'updateGlobalConfig',
+            //     payload: {
+            //       isLogin: true
+            //     },
+            // });
         }
     },
     reducers: {
-        changeWebSiteGlobalConfig(state, { payload }) {
+        updateGlobalConfig(state, { payload }) {
             return { ...state, ...payload }
         },
     },

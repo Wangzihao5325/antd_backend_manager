@@ -20,7 +20,7 @@ const Model = {
     *login({ payload }, { call, put }) {
       const { name, password } = payload;
       const response = yield call(postLogin, payload);
-
+      console.log(response);
       if (response.code === 1) {
         SERVICES.token = response.result;
         setAuthority('admin');//设置权限

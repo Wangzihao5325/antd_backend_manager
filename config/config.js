@@ -119,6 +119,13 @@ export default {
       routes: [
         {
           path: '/',
+          name: 'welcome',
+          icon: 'chrome',
+          component: './mainPage/index',
+          authority: ['admin', 'user'],
+        },
+        {
+          path: '/websiteOne',
           name: 'websiteOne',
           icon: 'chrome',
           component: './websiteOne/index',
