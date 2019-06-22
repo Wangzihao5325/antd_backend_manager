@@ -119,7 +119,7 @@ export default {
       routes: [
         {
           name: 'home',
-          path: '/dashboard/analysis',
+          path: '/',
           icon: 'line-chart',
           component: './dashboard/analysis',
           authority: ['admin', 'user'],
