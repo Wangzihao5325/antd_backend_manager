@@ -119,8 +119,8 @@ export default {
       routes: [
         {
           path: '/',
-          name: 'welcome',
-          icon: 'chrome',
+          name: 'home',
+          icon: 'line-chart',
           component: './mainPage/index',
           authority: ['admin', 'user'],
         },
