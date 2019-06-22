@@ -107,9 +107,9 @@ export default {
         {
           name: 'login',
           path: '/user/login',
-          component: './login',//./user/login
+          component: './login', //./user/login
         },
-      ]
+      ],
     },
     {
       path: '/',
@@ -118,12 +118,21 @@ export default {
       authority: ['admin', 'user'],
       routes: [
         {
-          path: '/',
           name: 'home',
+          path: '/dashboard/analysis',
           icon: 'line-chart',
-          component: './mainPage/index',
+          component: './dashboard/analysis',
           authority: ['admin', 'user'],
         },
+        /* 首页暂时屏蔽，采用dashboard demo代替
+         {
+            path: '/',
+            name: 'home',
+            icon: 'line-chart',
+            component: './mainPage/index',
+            authority: ['admin', 'user'],
+          },
+          */
         {
           path: '/websiteOne',
           name: 'websiteOne',
