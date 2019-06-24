@@ -1,6 +1,6 @@
 const SERVICES = {
-    domain: 'http://bbf4fbea.ngrok.io',
-    token: 'a308b5729594f843ba3e69adc2acbf7b'
+    domain: 'http://85583a65.ngrok.io',
+    token: '50c48ebb42a3231ae278c092cf1e5dab'
 };
 
 export default SERVICES;

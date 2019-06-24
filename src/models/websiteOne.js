@@ -1,5 +1,5 @@
 import { queryCurrent, query as queryUsers } from '@/services/websiteOne';
-import { fetchWebsiteOneGlobalConfig } from '@/services/websiteOne';
+import { fetchWebsiteOneGlobalConfig, updateWebsiteOneGlobalConfig } from '@/services/websiteOne';
 import { message as Message } from 'antd';
 
 const Model = {
@@ -10,6 +10,7 @@ const Model = {
     effects: {
         *getGlobalConfig(_, { call, put }) {
             const response = yield call(fetchWebsiteOneGlobalConfig);
+            console.log(response);
             const { code, message, result } = response;
             if (code === 1) {
                 const globalConfigReg = {
@@ -17,6 +18,7 @@ const Model = {
                     new_url: result.NEW_WEBSITE_URL ? result.NEW_WEBSITE_URL : '',
                     meta_description: result.META_DESCRIPTION ? result.META_DESCRIPTION : '',
                     meta_keywords: result.META_KEYWORDS ? result.META_KEYWORDS : '',
+                    web_title: result.WEB_TITLE ? result.WEB_TITLE : '',
                 };
                 yield put({
                     type: 'updateGlobalConfig',
@@ -26,6 +28,19 @@ const Model = {
                 });
             } else {
                 Message.error(message);
+            }
+        },
+        *submitGlobalConfig({ payload }, { call, put }) {
+            console.log(payload);
+            const response = yield call(updateWebsiteOneGlobalConfig, payload);
+            console.log(response);
+            if (response.code === 1) {
+                Message.success('提交成功');
+                yield put({
+                    type: 'getGlobalConfig'
+                });
+            } else {
+                Message.success('提交失败，请联系后台管理员！');
             }
         }
     },
