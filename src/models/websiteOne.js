@@ -1,11 +1,16 @@
 import { queryCurrent, query as queryUsers } from '@/services/websiteOne';
-import { fetchWebsiteOneGlobalConfig, updateWebsiteOneGlobalConfig } from '@/services/websiteOne';
+import {
+    fetchWebsiteOneGlobalConfig,
+    updateWebsiteOneGlobalConfig,
+    fetchWebsiteOneAdList,
+} from '@/services/websiteOne';
 import { message as Message } from 'antd';
 
 const Model = {
     namespace: 'websiteOne',
     state: {
-        webSiteGlobalConfig: {}
+        webSiteGlobalConfig: {},
+        adlist: {}
     },
     effects: {
         *getGlobalConfig(_, { call, put }) {
@@ -39,6 +44,10 @@ const Model = {
             } else {
                 Message.success('提交失败，请联系后台管理员！');
             }
+        },
+        *getAdList({ payload }, { call, put }) {
+            const response = yield call(fetchWebsiteOneAdList, payload);
+            console.log(reponse);
         }
     },
     reducers: {

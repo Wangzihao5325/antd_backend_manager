@@ -27,6 +27,13 @@ class Website extends Component {
         dispatch({
             type: 'websiteOne/getGlobalConfig'
         });
+        dispatch({
+            type: 'websiteOne/getAdList',
+            payload: {
+                Page: 1,
+                Limit: 15
+            }
+        });
     }
 
     render() {
