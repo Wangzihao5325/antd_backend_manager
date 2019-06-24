@@ -10,7 +10,6 @@ const Model = {
     effects: {
         *getGlobalConfig(_, { call, put }) {
             const response = yield call(fetchWebsiteOneGlobalConfig);
-            console.log(response);
             const { code, message, result } = response;
             if (code === 1) {
                 const globalConfigReg = {
@@ -31,9 +30,7 @@ const Model = {
             }
         },
         *submitGlobalConfig({ payload }, { call, put }) {
-            console.log(payload);
             const response = yield call(updateWebsiteOneGlobalConfig, payload);
-            console.log(response);
             if (response.code === 1) {
                 Message.success('提交成功');
                 yield put({
