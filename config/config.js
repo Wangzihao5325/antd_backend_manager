@@ -30,20 +30,20 @@ const plugins = [
       },
       pwa: pwa
         ? {
-          workboxPluginMode: 'InjectManifest',
-          workboxOptions: {
-            importWorkboxFrom: 'local',
-          },
-        }
+            workboxPluginMode: 'InjectManifest',
+            workboxOptions: {
+              importWorkboxFrom: 'local',
+            },
+          }
         : false,
       ...(!TEST && os.platform() === 'darwin'
         ? {
-          dll: {
-            include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch'],
-            exclude: ['@babel/runtime', 'netlify-lambda'],
-          },
-          hardSource: false,
-        }
+            dll: {
+              include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch'],
+              exclude: ['@babel/runtime', 'netlify-lambda'],
+            },
+            hardSource: false,
+          }
         : {}),
     },
   ],
@@ -71,14 +71,14 @@ if (ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site') {
 const uglifyJSOptions =
   NODE_ENV === 'production'
     ? {
-      uglifyOptions: {
-        // remove console.* except console.error
-        compress: {
-          drop_console: true,
-          pure_funcs: ['console.error'],
+        uglifyOptions: {
+          // remove console.* except console.error
+          compress: {
+            drop_console: true,
+            pure_funcs: ['console.error'],
+          },
         },
-      },
-    }
+      }
     : {};
 export default {
   // add for transfer to umi
@@ -118,6 +118,11 @@ export default {
       authority: ['admin', 'user'],
       routes: [
         {
+          name: 'advanced-form',
+          path: '/form/advanced-form',
+          component: './form/advanced-form',
+        },
+        {
           name: 'home',
           path: '/',
           icon: 'line-chart',
@@ -125,14 +130,14 @@ export default {
           authority: ['admin', 'user'],
         },
         /* 首页暂时屏蔽，采用dashboard demo代替
-         {
-            path: '/',
-            name: 'home',
-            icon: 'line-chart',
-            component: './mainPage/index',
-            authority: ['admin', 'user'],
-          },
-          */
+     {
+        path: '/',
+        name: 'home',
+        icon: 'line-chart',
+        component: './mainPage/index',
+        authority: ['admin', 'user'],
+      },
+      */
         {
           path: '/websiteOne',
           name: 'websiteOne',
