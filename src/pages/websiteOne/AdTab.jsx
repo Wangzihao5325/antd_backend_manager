@@ -6,7 +6,7 @@ import AdConfig from '@/components/adConfig/index';
 
 class AdTab extends Component {
     state = {
-        data: [{ name: { last: '111' } }, { name: { last: '222' } }, { name: { last: '222' } }],
+        data: [{ description: 'www.baidu.com' }, { description: 'www.youtube.com' }, { description: 'www.google.com' }],
         modelVisable: false,
         confirmLoading: false,
         nowSelect: -1,
@@ -16,7 +16,7 @@ class AdTab extends Component {
         let { modelVisable, confirmLoading } = this.state;
         return (
             <div>
-                <Row>
+                <Row type="flex" justify="end">
                     <Col>
                         <Button onClick={() => this.editItem(-1)} type="dashed">+ 添加广告</Button>
                         <Button style={{ marginLeft: 10 }} onClick={() => this.editItem(-1)} type="primary">提交修改</Button>
@@ -33,8 +33,8 @@ class AdTab extends Component {
                                     avatar={
                                         <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
                                     }
-                                    title={<div >{item.name.last}</div>}
-                                    description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                                    title={<div >{index + 1}</div>}
+                                    description={item.description}
                                 />
                             </Skeleton>
                         </List.Item>

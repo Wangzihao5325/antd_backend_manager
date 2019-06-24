@@ -14,7 +14,7 @@ class Website extends Component {
         const panes = [
             { title: '全局配置', content: <MainTab />, key: '1', closable: false },
             { title: '广告配置', content: <AdTab />, key: '2', closable: false },
-            { title: '模块1', content: <ModuleTab />, key: '3' },
+            { title: '模块配置', content: <ModuleTab />, key: '3' },
         ];
         this.state = {
             activeKey: panes[0].key,
@@ -41,8 +41,8 @@ class Website extends Component {
             <Tabs
                 onChange={this.onChange}
                 activeKey={this.state.activeKey}
-                type="editable-card"
-                onEdit={this.onEdit}
+                type="card"
+                //onEdit={this.onEdit}
             >
                 {this.state.panes.map(pane => (
                     <TabPane tab={pane.title} key={pane.key} closable={pane.closable}>
@@ -57,9 +57,9 @@ class Website extends Component {
         this.setState({ activeKey });
     };
 
-    onEdit = (targetKey, action) => {
-        this[action](targetKey);
-    };
+    // onEdit = (targetKey, action) => {
+    //     this[action](targetKey);
+    // };
 
     add = () => {
         const { panes } = this.state;
