@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Row, Col, List, Skeleton, Avatar, Button, Modal } from 'antd';
+import AdConfig from '@/components/adConfig/index';
 
 
 class AdTab extends Component {
@@ -17,7 +18,9 @@ class AdTab extends Component {
             <div>
                 <Row>
                     <Col>
-                        <Button type="dashed">+ 添加广告</Button>
+                        <Button onClick={() => this.editItem(-1)} type="dashed">+ 添加广告</Button>
+                        <Button style={{ marginLeft: 10 }} onClick={() => this.editItem(-1)} type="primary">提交修改</Button>
+                        <Button style={{ marginLeft: 10 }} onClick={() => this.editItem(-1)} type="danger">放弃修改</Button>
                     </Col>
                 </Row>
                 <List
@@ -44,7 +47,7 @@ class AdTab extends Component {
                     confirmLoading={confirmLoading}
                     onCancel={this.handleCancel}
                 >
-                    
+                    <AdConfig />
                 </Modal>
             </div>
         );
