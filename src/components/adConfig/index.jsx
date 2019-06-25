@@ -1,27 +1,16 @@
 import React, { Component } from 'react';
 import { Row, Col, Input, Switch, Icon, Upload, message } from 'antd';
-
-function getBase64(img, callback) {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
-}
-
-function beforeUpload(file) {
-    const isJPG = file.type === 'image/jpeg';
-    if (!isJPG) {
-        message.error('You can only upload JPG file!');
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-        message.error('Image must smaller than 2MB!');
-    }
-    return isJPG && isLt2M;
-}
+import SERVICES from '../../../config/serviceConfig';
+import { uploadPic, addAd } from '@/services/websiteOne';
 
 export default class AdConfig extends Component {
     state = {
         loading: false,
+        linkAddress: '',
+        sortNum: '',
+        isAdShow: true,
+        imageUrl: null,
+        imageData: null,
     };
 
     render() {
@@ -31,7 +20,7 @@ export default class AdConfig extends Component {
                 <div className="ant-upload-text">Upload</div>
             </div>
         );
-        const { imageUrl } = this.state;
+        const { linkAddress, sortNum, isAdShow, imageUrl, imageData } = this.state;
         return (
             <div>
                 <Row type="flex" justify="center">
@@ -39,7 +28,7 @@ export default class AdConfig extends Component {
                         <p>广告跳转地址:</p>
                         <Input
                             //style={{ width: INPUT_WIDTH }}
-                            value={'12345'}
+                            value={linkAddress}
                             onChange={this.adLinkChangeHandle}
                         />
                     </Col>
@@ -49,28 +38,26 @@ export default class AdConfig extends Component {
                         <p>排序编号(数字越大排序越靠前):</p>
                         <Input
                             //style={{ width: INPUT_WIDTH }}
-                            value={'12345'}
-                            onChange={this.adLinkChangeHandle}
+                            value={sortNum}
+                            onChange={this.sortNumChangeHandel}
                         />
                     </Col>
                     <Col xs={0} md={2} />
                     <Col style={{ marginTop: 10 }} xs={24} md={10}>
                         <p>是否展示:</p>
-                        <Switch checkedChildren="开" unCheckedChildren="关" defaultChecked />
+                        <Switch checkedChildren="开" unCheckedChildren="关" checked={isAdShow} onClick={this.switchChange} />
                     </Col>
                 </Row>
                 <Row style={{ marginTop: 20 }} type="flex" justify="center">
                     <Col xs={24} md={22}>
                         <Upload
-                            name="avatar"
                             listType="picture-card"
                             className="avatar-uploader"
                             showUploadList={false}
-                            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                            beforeUpload={beforeUpload}
-                            onChange={this.handleChange}
+                            customRequest={this.customRequest}
+                            onRemove={this.handleRemove}
                         >
-                            {imageUrl ? <img src={imageUrl} alt="avatar" /> : uploadButton}
+                            {imageData ? <img style={{ height: 102, width: 102 }} className='uploadImage' src={imageData} alt="avatar" /> : uploadButton}
                         </Upload>
                     </Col>
                 </Row>
@@ -78,23 +65,60 @@ export default class AdConfig extends Component {
         );
     }
 
-    adLinkChangeHandle = () => {
-
+    submit = (callback) => {
+        let { imageUrl, linkAddress, sortNum, isAdShow } = this.state;
+        let payload = {
+            sortNum,
+            imageUrl: imageUrl,
+            adLink: linkAddress,
+            status: isAdShow ? 1 : 0
+        };
+        addAd(payload, (result, code, message) => {
+            if (code === 1 && callback) {
+                callback();
+            }
+        });
     }
 
-    handleImageChange = info => {
-        if (info.file.status === 'uploading') {
-            this.setState({ loading: true });
-            return;
-        }
-        if (info.file.status === 'done') {
-            // Get this url from response in real world.
-            getBase64(info.file.originFileObj, imageUrl =>
+    customRequest = (files) => {
+        message.loading('正在上传图片请稍后', 0);
+        const { file } = files;
+        uploadPic(file, (imageRef) => {
+            console.log(imageRef);
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (e) => {
                 this.setState({
-                    imageUrl,
-                    loading: false,
-                }),
-            );
-        }
-    };
+                    imageData: e.target.result,
+                    imageUrl: imageRef
+                }, () => {
+                    message.destroy();
+                    message.success('上传成功');
+                });
+            }
+        });
+    }
+
+    switchChange = () => {
+        this.setState((preState) => {
+            return {
+                isAdShow: !preState.isAdShow
+            }
+        });
+    }
+
+    adLinkChangeHandle = (e) => {
+        let { value } = e.target;
+        this.setState({
+            linkAddress: value
+        })
+    }
+
+    sortNumChangeHandel = (e) => {
+        let { value } = e.target;
+        this.setState({
+            sortNum: value
+        })
+    }
+
 }

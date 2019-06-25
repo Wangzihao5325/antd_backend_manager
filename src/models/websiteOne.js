@@ -10,7 +10,7 @@ const Model = {
     namespace: 'websiteOne',
     state: {
         webSiteGlobalConfig: {},
-        adlist: {}
+        adlist: []
     },
     effects: {
         *getGlobalConfig(_, { call, put }) {
@@ -47,13 +47,24 @@ const Model = {
         },
         *getAdList({ payload }, { call, put }) {
             const response = yield call(fetchWebsiteOneAdList, payload);
-            console.log(reponse);
+            console.log(response);
+            let { data } = response.result;
+            yield put({
+                type: 'pushAdListItem',
+                payload: {
+                    data: data
+                }
+            });
         }
     },
     reducers: {
         updateGlobalConfig(state, { payload }) {
             return { ...state, ...payload }
         },
+        pushAdListItem(state, { payload }) {
+            let data = payload.data;
+            return { ...state, adlist: data }
+        }
     },
 };
 export default Model;
