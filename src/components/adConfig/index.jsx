@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Row, Col, Input, Switch, Icon, Upload, message } from 'antd';
 import SERVICES from '../../../config/serviceConfig';
-import { uploadPic, addAd } from '@/services/websiteOne';
+import { uploadPic, addAd, modifyAd } from '@/services/websiteOne';
 
 export default class AdConfig extends Component {
     state = {
+        dataReg: [],
+        nowSelectReg: -1,
         loading: false,
         linkAddress: '',
         sortNum: '',
@@ -12,6 +14,34 @@ export default class AdConfig extends Component {
         imageUrl: null,
         imageData: null,
     };
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.data !== prevState.dataReg || nextProps.nowSelect !== prevState.nowSelectReg) {
+            if (nextProps.nowSelect === -1) {
+                return {
+                    dataReg: nextProps.data,
+                    nowSelectReg: nextProps.nowSelect,
+                    linkAddress: '',
+                    sortNum: '',
+                    isAdShow: true,
+                    imageUrl: null,
+                    imageData: null,
+                }
+            } else {
+                let indexData = nextProps.data[nextProps.nowSelect];
+                return {
+                    dataReg: nextProps.data,
+                    nowSelectReg: nextProps.nowSelect,
+                    linkAddress: indexData.href,
+                    sortNum: indexData.sort,
+                    isAdShow: indexData.status === 1 ? true : false,
+                    imageUrl: indexData.ad_image_path,
+                    imageData: indexData.ad_image_path,
+                }
+            }
+        }
+        return null;
+    }
 
     render() {
         const uploadButton = (
@@ -66,18 +96,27 @@ export default class AdConfig extends Component {
     }
 
     submit = (callback) => {
-        let { imageUrl, linkAddress, sortNum, isAdShow } = this.state;
+        let { imageUrl, linkAddress, sortNum, isAdShow, nowSelectReg } = this.state;
         let payload = {
             sortNum,
             imageUrl: imageUrl,
             adLink: linkAddress,
-            status: isAdShow ? 1 : 0
+            status: isAdShow ? 1 : 0,
         };
-        addAd(payload, (result, code, message) => {
-            if (code === 1 && callback) {
-                callback();
-            }
-        });
+        if (nowSelectReg == -1) {
+            addAd(payload, (result, code, message) => {
+                if (code === 1 && callback) {
+                    callback();
+                }
+            });
+        } else {
+            payload.Id = this.state.dataReg[nowSelectReg].id;
+            modifyAd(payload, (result, code, message) => {
+                if (code === 1 && callback) {
+                    callback();
+                }
+            });
+        }
     }
 
     customRequest = (files) => {

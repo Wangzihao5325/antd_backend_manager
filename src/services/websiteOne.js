@@ -1,6 +1,7 @@
 import request from '@/utils/request';
 import SERVICES from '../../config/serviceConfig';
 import { message as Message } from 'antd';
+import _ from 'lodash';
 
 export async function fetchWebsiteOneGlobalConfig() {
     return request.get(`${SERVICES.domain}/admin/lyf/config`, { headers: { Authorization: `${SERVICES.token}` } });
@@ -50,4 +51,21 @@ export function addAd(payload, onSuccess, onError) {
     formData.append('sort', payload.sortNum);
     formData.append('status', payload.status);
     fetchWrapper('/admin/lyf/ad/store', formData, onSuccess, onError);
+}
+
+export function modifyAd(payload, onSuccess, onError) {
+    let url = `/admin/lyf/ad/${payload.Id}`;
+    let imageUrlWithoutDomain = _.replace(payload.imageUrl, `${SERVICES.domain}/storage/`, '');
+    let formData = new FormData();
+    formData.append('ad_image_path', imageUrlWithoutDomain);
+    formData.append('href', payload.adLink);
+    formData.append('sort', payload.sortNum);
+    formData.append('status', payload.status);
+    fetchWrapper(url, formData, onSuccess, onError);
+}
+
+export function deleteAd(id, onSuccess, onError) {
+    let url = `/admin/lyf/ad/delete/${id}`;
+    let formData = new FormData();
+    fetchWrapper(url, formData, onSuccess, onError);
 }

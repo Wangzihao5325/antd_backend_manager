@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Row, Col, List, Skeleton, Avatar, Button, Modal, Tag } from 'antd';
+import { Row, Col, List, Skeleton, Avatar, Button, Modal, Tag, message } from 'antd';
 import AdConfig from '@/components/adConfig/index';
+import { deleteAd } from '@/services/websiteOne';
 
 
 class AdTab extends Component {
@@ -24,19 +25,17 @@ class AdTab extends Component {
     }
 
     render() {
-        let { modelVisable, confirmLoading } = this.state;
+        let { modelVisable, confirmLoading, nowSelect, adlist } = this.state;
         return (
             <div>
                 <Row type="flex" justify="end">
                     <Col>
                         <Button onClick={() => this.editItem(-1)} type="dashed">+ 添加广告</Button>
-                        <Button style={{ marginLeft: 10 }} onClick={() => this.editItem(-1)} type="primary">提交修改</Button>
-                        <Button style={{ marginLeft: 10 }} onClick={() => this.editItem(-1)} type="danger">放弃修改</Button>
                     </Col>
                 </Row>
                 <List
                     itemLayout='horizontal'
-                    dataSource={this.state.adlist}
+                    dataSource={adlist}
                     renderItem={(item, index) => (
                         <List.Item actions={[<a onClick={() => this.editItem(index)}>edit</a>, <a onClick={() => this.deleteitem(index)}>delete</a>]}>
                             <Skeleton avatar title={false} loading={item.loading} active>
@@ -58,7 +57,7 @@ class AdTab extends Component {
                     confirmLoading={confirmLoading}
                     onCancel={this.handleCancel}
                 >
-                    <AdConfig ref={(ref) => this.AdConfig = ref} />
+                    <AdConfig nowSelect={nowSelect} data={adlist} ref={(ref) => this.AdConfig = ref} />
                 </Modal>
             </div>
         );
@@ -105,7 +104,20 @@ class AdTab extends Component {
     }
 
     deleteitem = (index) => {
-        console.log(index);
+        let id = this.state.adlist[index].id;
+        message.loading('正在删除ing...', 0);
+        deleteAd(id, () => {
+            message.destroy();
+            message.success('删除成功，正在更新数据...');
+            let { dispatch } = this.props;
+            dispatch({
+                type: 'websiteOne/getAdList',
+                payload: {
+                    Page: 1,
+                    Limit: 15
+                }
+            });
+        });
     }
 }
 
