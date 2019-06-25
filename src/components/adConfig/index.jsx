@@ -104,15 +104,21 @@ export default class AdConfig extends Component {
             status: isAdShow ? 1 : 0,
         };
         if (nowSelectReg == -1) {
-            addAd(payload, (result, code, message) => {
+            message.loading('正在添加...!', 0);
+            addAd(payload, (result, code) => {
                 if (code === 1 && callback) {
+                    message.destroy();
+                    message.success('添加成功,正在更新数据...');
                     callback();
                 }
             });
         } else {
+            message.loading('正在进行修改...!', 0);
             payload.Id = this.state.dataReg[nowSelectReg].id;
             modifyAd(payload, (result, code, message) => {
                 if (code === 1 && callback) {
+                    message.destroy();
+                    message.success('修改成功,正在更新数据...');
                     callback();
                 }
             });
