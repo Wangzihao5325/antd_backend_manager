@@ -37,7 +37,7 @@ class AdTab extends Component {
                     itemLayout='horizontal'
                     dataSource={adlist}
                     renderItem={(item, index) => (
-                        <List.Item actions={[<a onClick={() => this.editItem(index)}>edit</a>, <a onClick={() => this.deleteitem(index)}>delete</a>]}>
+                        <List.Item actions={[<a onClick={() => this.editItem(index)}>edit</a>, <a style={{ color: '#f5222d' }} onClick={() => this.deleteitem(index)}>delete</a>]}>
                             <Skeleton avatar title={false} loading={item.loading} active>
                                 <List.Item.Meta
                                     avatar={
