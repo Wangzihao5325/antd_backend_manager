@@ -2,6 +2,7 @@ import request from '@/utils/request';
 import SERVICES from '../../config/serviceConfig';
 import { message as Message } from 'antd';
 import _ from 'lodash';
+import { async } from 'q';
 
 export async function fetchWebsiteOneGlobalConfig() {
     return request.get(`${SERVICES.domain}/admin/lyf/config`, { headers: { Authorization: `${SERVICES.token}` } });
@@ -14,6 +15,10 @@ export async function updateWebsiteOneGlobalConfig(payload) {
 
 export async function fetchWebsiteOneAdList(payload) {
     return request.get(`${SERVICES.domain}/admin/lyf/ad/lists`, { headers: { Authorization: `${SERVICES.token}` }, params: payload, requestType: 'json' });
+}
+
+export async function fetchModuleList() {
+    return request.get(`${SERVICES.domain}//admin/lyf/type/lists`, { headers: { Authorization: `${SERVICES.token}` } });
 }
 
 function fetchWrapper(url, formData, onSuccess, onError) {

@@ -45,7 +45,7 @@ class TableForm extends PureComponent<TableFormProps, TableFormState> {
       title: '网站名称',
       dataIndex: 'name',
       key: 'name',
-      width: '20%',
+      width: '10%',
       render: (text: string, record: TableFormDateType) => {
         if (record.editable) {
           return (
@@ -62,18 +62,18 @@ class TableForm extends PureComponent<TableFormProps, TableFormState> {
       },
     },
     {
-      title: '工号',
-      dataIndex: 'workId',
-      key: 'workId',
-      width: '20%',
+      title: '是否开启',
+      dataIndex: 'status',
+      key: 'status',
+      width: '15%',
       render: (text: string, record: TableFormDateType) => {
         if (record.editable) {
           return (
             <Input
               value={text}
-              onChange={e => this.handleFieldChange(e, 'workId', record.key)}
+              onChange={e => this.handleFieldChange(e, 'status', record.key)}
               onKeyPress={e => this.handleKeyPress(e, record.key)}
-              placeholder="工号"
+              placeholder="1:开启 0:关闭"
             />
           );
         }
@@ -81,18 +81,37 @@ class TableForm extends PureComponent<TableFormProps, TableFormState> {
       },
     },
     {
-      title: '是否开启',
-      dataIndex: 'department',
-      key: 'department',
-      width: '20%',
+      title: '排序值',
+      dataIndex: 'sort',
+      key: 'sort',
+      width: '15%',
       render: (text: string, record: TableFormDateType) => {
         if (record.editable) {
           return (
             <Input
               value={text}
-              onChange={e => this.handleFieldChange(e, 'department', record.key)}
+              onChange={e => this.handleFieldChange(e, 'sort', record.key)}
               onKeyPress={e => this.handleKeyPress(e, record.key)}
-              placeholder="是否开启(1:开启 0:关闭)"
+              placeholder="数字越大越靠前"
+            />
+          );
+        }
+        return text;
+      },
+    },
+    {
+      title: '网站链接',
+      dataIndex: 'href',
+      key: 'href',
+      width: '40%',
+      render: (text: string, record: TableFormDateType) => {
+        if (record.editable) {
+          return (
+            <Input
+              value={text}
+              onChange={e => this.handleFieldChange(e, 'href', record.key)}
+              onKeyPress={e => this.handleKeyPress(e, record.key)}
+              placeholder="网站链接"
             />
           );
         }

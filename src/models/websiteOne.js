@@ -3,6 +3,7 @@ import {
     fetchWebsiteOneGlobalConfig,
     updateWebsiteOneGlobalConfig,
     fetchWebsiteOneAdList,
+    fetchModuleList,
 } from '@/services/websiteOne';
 import { message as Message } from 'antd';
 
@@ -10,7 +11,8 @@ const Model = {
     namespace: 'websiteOne',
     state: {
         webSiteGlobalConfig: {},
-        adlist: []
+        adlist: [],
+        modulelist: []
     },
     effects: {
         *getGlobalConfig(_, { call, put }) {
@@ -47,7 +49,6 @@ const Model = {
         },
         *getAdList({ payload }, { call, put }) {
             const response = yield call(fetchWebsiteOneAdList, payload);
-            console.log(response);
             let { data } = response.result;
             yield put({
                 type: 'pushAdListItem',
@@ -55,6 +56,10 @@ const Model = {
                     data: data
                 }
             });
+        },
+        *getModuleList(_, { call, put }) {
+            const response = yield call(fetchModuleList);
+            console.log(response);
         }
     },
     reducers: {
