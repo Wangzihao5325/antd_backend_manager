@@ -129,7 +129,6 @@ export default class AdConfig extends Component {
         message.loading('正在上传图片请稍后', 0);
         const { file } = files;
         uploadPic(file, (imageRef) => {
-            console.log(imageRef);
             let reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = (e) => {

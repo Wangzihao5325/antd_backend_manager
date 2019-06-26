@@ -42,7 +42,7 @@ class TableForm extends PureComponent<TableFormProps, TableFormState> {
 
   columns = [
     {
-      title: '成员姓名',
+      title: '网站名称',
       dataIndex: 'name',
       key: 'name',
       width: '20%',
@@ -54,7 +54,7 @@ class TableForm extends PureComponent<TableFormProps, TableFormState> {
               autoFocus
               onChange={e => this.handleFieldChange(e, 'name', record.key)}
               onKeyPress={e => this.handleKeyPress(e, record.key)}
-              placeholder="成员姓名"
+              placeholder="网站名称"
             />
           );
         }
@@ -81,10 +81,10 @@ class TableForm extends PureComponent<TableFormProps, TableFormState> {
       },
     },
     {
-      title: '所属部门',
+      title: '是否开启',
       dataIndex: 'department',
       key: 'department',
-      width: '40%',
+      width: '20%',
       render: (text: string, record: TableFormDateType) => {
         if (record.editable) {
           return (
@@ -92,7 +92,7 @@ class TableForm extends PureComponent<TableFormProps, TableFormState> {
               value={text}
               onChange={e => this.handleFieldChange(e, 'department', record.key)}
               onKeyPress={e => this.handleKeyPress(e, record.key)}
-              placeholder="所属部门"
+              placeholder="是否开启(1:开启 0:关闭)"
             />
           );
         }
