@@ -32,12 +32,17 @@ class FormWithWrapper extends Component {
         const {
             form: { getFieldDecorator }
         } = this.props;
+        let cardArr = this.props.initData.map((item, index) => {
+            return (
+                <Card style={{ marginTop: 20 }} key={item.id} title={item.title} bordered={false}>
+                    {getFieldDecorator(`${item.id}`, {
+                        initialValue: item.websites,
+                    })(<TableForm />)}
+                </Card>
+            );
+        });
         return (
-            <Card title={this.props.title} bordered={false}>
-                {getFieldDecorator('members', {
-                    initialValue: this.props.initData,
-                })(<TableForm />)}
-            </Card>
+            cardArr
         );
     }
 }
@@ -54,6 +59,7 @@ class ModuleTab extends Component {
     }
 
     render() {
+        let { modulelist = [] } = this.props;
         return (
             <div>
                 <Row style={{ marginBottom: 15 }} type="flex" justify="end">
@@ -64,13 +70,13 @@ class ModuleTab extends Component {
                     </Col>
                 </Row>
 
-                <MyForm title='精品站' initData={tableData} />
+                <MyForm initData={modulelist} />
             </div>
         );
     }
 
     handleSth = () => {
-
+        this.form.submit1();
     }
 }
 

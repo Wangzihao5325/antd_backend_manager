@@ -59,6 +59,13 @@ const Model = {
         },
         *getModuleList(_, { call, put }) {
             const response = yield call(fetchModuleList);
+            let moduleData = response.result.data;
+            yield put({
+                type: 'updateModuleData',
+                payload: {
+                    data: moduleData
+                }
+            });
             console.log(response);
         }
     },
@@ -69,6 +76,10 @@ const Model = {
         pushAdListItem(state, { payload }) {
             let data = payload.data;
             return { ...state, adlist: data }
+        },
+        updateModuleData(state, { payload }) {
+            let data = payload.data;
+            return { ...state, modulelist: data }
         }
     },
 };

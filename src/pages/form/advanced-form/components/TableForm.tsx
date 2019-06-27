@@ -6,9 +6,10 @@ import styles from '../style.less';
 
 interface TableFormDateType {
   key: string;
-  workId?: string;
-  name?: string;
-  department?: string;
+  status?: string;
+  title?: string;
+  sort?: string;
+  href?: string;
   isNew?: boolean;
   editable?: boolean;
 }
@@ -43,8 +44,8 @@ class TableForm extends PureComponent<TableFormProps, TableFormState> {
   columns = [
     {
       title: '网站名称',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'title',
+      key: 'title',
       width: '10%',
       render: (text: string, record: TableFormDateType) => {
         if (record.editable) {
@@ -52,7 +53,7 @@ class TableForm extends PureComponent<TableFormProps, TableFormState> {
             <Input
               value={text}
               autoFocus
-              onChange={e => this.handleFieldChange(e, 'name', record.key)}
+              onChange={e => this.handleFieldChange(e, 'title', record.key)}
               onKeyPress={e => this.handleKeyPress(e, record.key)}
               placeholder="网站名称"
             />
@@ -193,9 +194,10 @@ class TableForm extends PureComponent<TableFormProps, TableFormState> {
     const newData = data.map(item => ({ ...item }));
     newData.push({
       key: `NEW_TEMP_ID_${this.index}`,
-      workId: '',
-      name: '',
-      department: '',
+      title: '',
+      status: '',
+      sort: '',
+      href: '',
       editable: true,
       isNew: true,
     });
@@ -240,8 +242,8 @@ class TableForm extends PureComponent<TableFormProps, TableFormState> {
         return;
       }
       const target = this.getRowByKey(key) || {};
-      if (!target.workId || !target.name || !target.department) {
-        message.error('请填写完整成员信息。');
+      if (!target.status || !target.title || !target.sort || !target.href) {
+        message.error('请填写完整网站信息。');
         (e.target as HTMLInputElement).focus();
         this.setState({
           loading: false,
@@ -284,9 +286,9 @@ class TableForm extends PureComponent<TableFormProps, TableFormState> {
     this.clickedCancel = false;
   }
 
+
   render() {
     const { loading, data } = this.state;
-
     return (
       <Fragment>
         <Table<TableFormDateType>
@@ -303,6 +305,14 @@ class TableForm extends PureComponent<TableFormProps, TableFormState> {
           icon="plus"
         >
           新增成员
+        </Button>
+        <Button
+          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+          type="danger"
+          onClick={this.newMember}
+          icon="minus"
+        >
+          删除模块
         </Button>
       </Fragment>
     );
