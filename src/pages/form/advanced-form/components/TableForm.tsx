@@ -1,5 +1,6 @@
 import { Button, Divider, Input, Popconfirm, Table, message } from 'antd';
 import React, { Fragment, PureComponent } from 'react';
+import { connect } from 'dva';
 
 import { isEqual } from 'lodash';
 import styles from '../style.less';
@@ -205,6 +206,11 @@ class TableForm extends PureComponent<TableFormProps, TableFormState> {
     this.setState({ data: newData });
   };
 
+  deleteMember = () => {
+    const { data = [] } = this.state;
+    console.log(data);
+  }
+
   remove(key: string) {
     const { data = [] } = this.state;
     const { onChange } = this.props;
@@ -309,7 +315,7 @@ class TableForm extends PureComponent<TableFormProps, TableFormState> {
         <Button
           style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
           type="danger"
-          onClick={this.newMember}
+          onClick={this.deleteMember}
           icon="minus"
         >
           删除模块
@@ -319,4 +325,8 @@ class TableForm extends PureComponent<TableFormProps, TableFormState> {
   }
 }
 
-export default TableForm;
+export default connect(({ websiteOne }: any) => ({
+  webSiteGlobalConfig: websiteOne.webSiteGlobalConfig
+}))(TableForm);
+
+//export default TableForm;

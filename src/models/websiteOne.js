@@ -4,6 +4,7 @@ import {
     updateWebsiteOneGlobalConfig,
     fetchWebsiteOneAdList,
     fetchModuleList,
+    deleteModuleById,
 } from '@/services/websiteOne';
 import { message as Message } from 'antd';
 
@@ -44,7 +45,7 @@ const Model = {
                     type: 'getGlobalConfig'
                 });
             } else {
-                Message.success('提交失败，请联系后台管理员！');
+                Message.error('提交失败，请联系后台管理员！');
             }
         },
         *getAdList({ payload }, { call, put }) {
@@ -59,6 +60,7 @@ const Model = {
         },
         *getModuleList(_, { call, put }) {
             const response = yield call(fetchModuleList);
+            console.log(response);
             let moduleData = response.result.data;
             yield put({
                 type: 'updateModuleData',
@@ -66,7 +68,16 @@ const Model = {
                     data: moduleData
                 }
             });
-            console.log(response);
+        },
+        *deleteModuleById({ payload }, { call, put }) {
+            const response = yield call(deleteModuleById, payload);
+            if (response.code === 1) {
+                yield put({
+                    type: 'getModuleList'
+                });
+            } else {
+                Message.error('删除失败，请联系后台管理员！');
+            }
         }
     },
     reducers: {

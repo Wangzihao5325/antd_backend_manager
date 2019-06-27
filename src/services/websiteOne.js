@@ -18,7 +18,12 @@ export async function fetchWebsiteOneAdList(payload) {
 }
 
 export async function fetchModuleList() {
-    return request.get(`${SERVICES.domain}//admin/lyf/type/lists`, { headers: { Authorization: `${SERVICES.token}` } });
+    return request.get(`${SERVICES.domain}/admin/lyf/type/lists`, { headers: { Authorization: `${SERVICES.token}` } });
+}
+
+export async function deleteModuleById(payload) {
+    const { id } = payload;
+    return request.post(`${SERVICES.domain}/admin/lyf/type/delete/${id}`, { headers: { Authorization: `${SERVICES.token}` } });
 }
 
 function fetchWrapper(url, formData, onSuccess, onError) {
