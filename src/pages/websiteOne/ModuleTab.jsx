@@ -5,6 +5,7 @@ import TableForm from '@/pages/form/advanced-form/components/TableForm';
 import styles from './style.less';
 import { submitModuleInfo } from '@/services/websiteOne';
 import _ from 'lodash';
+import { modifyWebsiteSubmit } from '@/services/websiteOne';
 
 const { Paragraph } = Typography;
 
@@ -249,6 +250,39 @@ class FormWithWrapper extends Component {
             this.setState({ websites: newWebsites });
         }
 
+    }
+
+    saveRow = (e, item) => {
+        if (typeof item.id === 'number') {
+            let { dispatch } = this.props;
+            Message.loading('保存ing...');
+            dispatch({
+                type: 'websiteOne/modifyWebsite',
+                payload: {
+                    id: item.id,
+                    params: {
+                        type_id: this.state.selectItem.id,
+                        title: item.title,
+                        href: item.href,
+                        status: item.status,
+                        sort: item.sort
+                    }
+                }
+            });
+        } else {
+            let { dispatch } = this.props;
+            Message.loading('保存ing...');
+            dispatch({
+                type: 'websiteOne/addWebsite',
+                payload: {
+                    type_id: this.state.selectItem.id,
+                    title: item.title,
+                    href: item.href,
+                    status: item.status,
+                    sort: item.sort
+                }
+            });
+        }
     }
 
     remove = (item) => {

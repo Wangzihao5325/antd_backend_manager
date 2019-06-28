@@ -7,7 +7,9 @@ import {
     deleteModuleById,
     moduleInfoSubmit,
     addModule,
-    removeWebsite
+    removeWebsite,
+    addWebsite,
+    modifyWebsite
 } from '@/services/websiteOne';
 import { message as Message } from 'antd';
 
@@ -106,6 +108,28 @@ const Model = {
                 });
             } else {
                 Message.error('删除网站失败！');
+            }
+        },
+        *addWebsite({ payload }, { call, put }) {
+            const response = yield call(addWebsite, payload);
+            if (response.code === 1) {
+                Message.success('添加网站成功,正在更新数据...');
+                yield put({
+                    type: 'getModuleList'
+                });
+            } else {
+                Message.error('添加网站失败！');
+            }
+        },
+        *modifyWebsite({ payload }, { call, put }) {
+            const response = yield call(modifyWebsite, payload);
+            if (response.code === 1) {
+                Message.success('添加网站成功,正在更新数据...');
+                yield put({
+                    type: 'getModuleList'
+                });
+            } else {
+                Message.error('添加网站失败！');
             }
         }
     },
