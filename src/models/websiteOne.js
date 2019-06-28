@@ -7,6 +7,7 @@ import {
     deleteModuleById,
     moduleInfoSubmit,
     addModule,
+    removeWebsite
 } from '@/services/websiteOne';
 import { message as Message } from 'antd';
 
@@ -94,6 +95,17 @@ const Model = {
                 });
             } else {
                 Message.error('新增模块失败！');
+            }
+        },
+        *removeWebsite({ payload }, { call, put }) {
+            const response = yield call(removeWebsite, payload);
+            if (response.code === 1) {
+                Message.success('删除网站成功,正在更新数据...');
+                yield put({
+                    type: 'getModuleList'
+                });
+            } else {
+                Message.error('删除网站失败！');
             }
         }
     },

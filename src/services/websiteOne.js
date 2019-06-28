@@ -35,6 +35,11 @@ export async function addModule(payload) {
     return request.post(`${SERVICES.domain}/admin/lyf/type/store`, { headers: { Authorization: `${SERVICES.token}` }, params: payload, requestType: 'json' });
 }
 
+export async function removeWebsite(payload) {
+    const { id } = payload;
+    return request.post(`${SERVICES.domain}/admin/lyf/website/delete/${id}`, { headers: { Authorization: `${SERVICES.token}` } });
+}
+
 function fetchWrapper(url, formData, onSuccess, onError) {
     let fullUrl = `${SERVICES.domain}${url}`;
     let header = { Accept: 'application/json', Authorization: `${SERVICES.token}` };

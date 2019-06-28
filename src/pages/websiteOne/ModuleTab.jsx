@@ -130,8 +130,8 @@ class FormWithWrapper extends Component {
                         <Input
                             value={text}
                             autoFocus
-                            onChange={e => this.handleFieldChange(e, 'title', record.key)}
-                            onKeyPress={e => this.handleKeyPress(e, record.key)}
+                            onChange={e => this.handleFieldChange(e, 'title', record)}
+                            //onKeyPress={e => this.handleKeyPress(e, record.key)}
                             placeholder="网站名称"
                         />
                     );
@@ -149,8 +149,8 @@ class FormWithWrapper extends Component {
                         <Input
                             value={text}
                             autoFocus
-                            onChange={e => this.handleFieldChange(e, 'title', record.key)}
-                            onKeyPress={e => this.handleKeyPress(e, record.key)}
+                            onChange={e => this.handleFieldChange(e, 'href', record)}
+                            //onKeyPress={e => this.handleKeyPress(e, record.key)}
                             placeholder="网站名称"
                         />
                     );
@@ -168,8 +168,8 @@ class FormWithWrapper extends Component {
                         <Input
                             value={text}
                             autoFocus
-                            onChange={e => this.handleFieldChange(e, 'title', record.key)}
-                            onKeyPress={e => this.handleKeyPress(e, record.key)}
+                            onChange={e => this.handleFieldChange(e, 'status', record)}
+                            //onKeyPress={e => this.handleKeyPress(e, record.key)}
                             placeholder="网站名称"
                         />
                     );
@@ -187,8 +187,8 @@ class FormWithWrapper extends Component {
                         <Input
                             value={text}
                             autoFocus
-                            onChange={e => this.handleFieldChange(e, 'title', record.key)}
-                            onKeyPress={e => this.handleKeyPress(e, record.key)}
+                            onChange={e => this.handleFieldChange(e, 'sort', record)}
+                            //onKeyPress={e => this.handleKeyPress(e, record.key)}
                             placeholder="网站名称"
                         />
                     );
@@ -207,9 +207,9 @@ class FormWithWrapper extends Component {
                     if (record.isNew) {
                         return (
                             <span>
-                                <a onClick={e => this.saveRow(e, record.key)}>添加</a>
+                                <a onClick={e => this.saveRow(e, record)}>添加</a>
                                 <Divider type="vertical" />
-                                <Popconfirm title="是否要删除此行？" onConfirm={() => this.remove(record.key)}>
+                                <Popconfirm title="是否要删除此行？" onConfirm={() => this.remove(record)}>
                                     <a>删除</a>
                                 </Popconfirm>
                             </span>
@@ -217,9 +217,9 @@ class FormWithWrapper extends Component {
                     }
                     return (
                         <span>
-                            <a onClick={e => this.saveRow(e, record.key)}>保存</a>
+                            <a onClick={e => this.saveRow(e, record)}>保存</a>
                             <Divider type="vertical" />
-                            <a onClick={e => this.cancelNew(e, record.key)}>取消</a>
+                            <a onClick={e => this.cancelNew(e, record)}>取消</a>
                         </span>
                     );
                 }
@@ -227,7 +227,7 @@ class FormWithWrapper extends Component {
                     <span>
                         <a onClick={e => this.toggleEditable(e, record, index)}>编辑</a>
                         <Divider type="vertical" />
-                        <Popconfirm title="是否要删除此行？" onConfirm={() => this.remove(record.key)}>
+                        <Popconfirm title="是否要删除此行？" onConfirm={() => this.remove(record)}>
                             <a>删除</a>
                         </Popconfirm>
                     </span>
@@ -236,8 +236,28 @@ class FormWithWrapper extends Component {
         },
     ];
 
-    remove = () => {
+    handleFieldChange = (e, key, item) => {
+        e.preventDefault();
+        let { value } = e.target;
 
+        let idReg = item.id;
+        let { websites } = this.state;
+        let newWebsites = websites.map(item => ({ ...item }));
+        let originItem = newWebsites.filter((item) => { return item.id === idReg })[0];
+        if (originItem) {
+            originItem[key] = value;
+            this.setState({ websites: newWebsites });
+        }
+
+    }
+
+    remove = (item) => {
+        let id = item.id;
+        let { dispatch } = this.props;
+        dispatch({
+            type: 'websiteOne/removeWebsite',
+            payload: { id }
+        });
     }
 
     toggleEditable = (e, item, index) => {
@@ -304,13 +324,29 @@ class FormWithWrapper extends Component {
         });
     }
 
-    cancelNew = () => {
-        let { websites } = this.state;
-        let newWebsite = [...websites];
-        newWebsite.pop();
-        this.setState({
-            websites: newWebsite,
-        });
+    cancelNew = (e, item) => {
+        if (item.id) {
+            let idReg = item.id;
+            let { websites, websitesReg } = this.state;
+            let newWebsites = websites.map(item => ({ ...item }));
+            let originItem = newWebsites.filter((item) => { return item.id === idReg })[0];
+            let originItemReg = websitesReg.filter((item) => { return item.id === idReg })[0];
+            if (originItem && originItemReg) {
+                originItem.title = originItemReg.title;
+                originItem.href = originItemReg.href;
+                originItem.status = originItemReg.status;
+                originItem.sort = originItemReg.sort;
+                originItem.editable = false;
+                this.setState({ websites: newWebsites });
+            }
+        } else {
+            let { websites } = this.state;
+            let newWebsite = [...websites];
+            newWebsite.pop();
+            this.setState({
+                websites: newWebsite,
+            });
+        }
     }
 }
 
@@ -323,7 +359,25 @@ class ModuleTab extends Component {
         websiteInfoVisable: false,
         confirmLoading: false,
         selectItem: { intro: '', sort: 0, status: 0, title: '', websites: [] },
-        modelType: 'new'
+        modelType: 'new',
+        modulelistReg: []
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.modulelist !== prevState.modulelistReg) {
+            if (typeof prevState.selectItem.id === 'number') {
+                let newSelectItem = nextProps.modulelist.filter((item) => { return item.id === prevState.selectItem.id })[0];
+                return {
+                    modulelistReg: nextProps.modulelist,
+                    selectItem: newSelectItem
+                }
+            } else {
+                return {
+                    modulelistReg: nextProps.modulelist
+                }
+            }
+        }
+        return null;
     }
 
     componentDidMount() {
@@ -403,14 +457,13 @@ class ModuleTab extends Component {
                     confirmLoading={this.state.confirmLoading}
                     onCancel={this.websiteConfigCancel}
                 >
-                    <WebsiteInfoConfig selectItem={this.state.selectItem} />
+                    <WebsiteInfoConfig dispatch={dispatch} selectItem={this.state.selectItem} />
                 </Modal>
             </div >
         );
     }
 
     itemWebsiteClick = (item) => {
-        console.log(item);
         this.setState({
             websiteInfoVisable: true,
             selectItem: item
