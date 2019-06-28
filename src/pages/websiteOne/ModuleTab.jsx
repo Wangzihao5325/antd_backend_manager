@@ -1,33 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Button, Form, Card, List, Icon, Typography, Modal, Input, message as Message } from 'antd';
+import { Row, Col, Button, Form, Card, List, Icon, Typography, Modal, Input, Table, message as Message } from 'antd';
 import TableForm from '@/pages/form/advanced-form/components/TableForm';
 import styles from './style.less';
 import { submitModuleInfo } from '@/services/websiteOne';
 
 const { Paragraph } = Typography;
-
-class FormWithWrapper extends Component {
-    render() {
-        const {
-            form: { getFieldDecorator }
-        } = this.props;
-        let cardArr = this.props.initData.map((item, index) => {
-            return (
-                <Card style={{ marginTop: 20 }} key={item.id} title={item.title} bordered={false}>
-                    {getFieldDecorator(`${item.id}`, {
-                        initialValue: item.websites,
-                    })(<TableForm />)}
-                </Card>
-            );
-        });
-        return (
-            cardArr
-        );
-    }
-}
-
-const MyForm = Form.create({ name: 'dynamic_form_item' })(FormWithWrapper);
 
 class ModuleInfoConfig extends Component {
     constructor(props) {
@@ -39,8 +17,8 @@ class ModuleInfoConfig extends Component {
     }
 
     state = {
-        data: {},
-        dataReg: {}
+        data: { intro: '', sort: 0, status: 0, title: '', websites: [] },
+        dataReg: { intro: '', sort: 0, status: 0, title: '', websites: [] }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -136,13 +114,63 @@ class ModuleInfoConfig extends Component {
     }
 }
 
+class FormWithWrapper extends Component {
+
+    columns = [
+        {
+            title: '网站名称',
+            dataIndex: 'title',
+            key: 'title',
+        },
+        {
+            title: '网站链接',
+            dataIndex: 'href',
+            key: 'href',
+        },
+        {
+            title: '是否开启(1:开启 0:关闭)',
+            dataIndex: 'status',
+            key: 'status',
+        },
+        {
+            title: '排序号',
+            dataIndex: 'sort',
+            key: 'sort',
+        },
+    ];
+
+    state = {
+        selectItem: { intro: '', sort: 0, status: 0, title: '', websites: [] },
+        selectItemReg: { intro: '', sort: 0, status: 0, title: '', websites: [] }
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.selectItem !== prevState.dataReg) {
+            return {
+                selectItem: nextProps.selectItem,
+                selectItemReg: nextProps.selectItem
+            }
+        }
+        return null;
+    }
+
+    render() {
+        let { websites = [] } = this.state.selectItem;
+        return (
+            <Table columns={this.columns} dataSource={websites} />
+        );
+    }
+}
+
+const WebsiteInfoConfig = Form.create({ name: 'dynamic_form_item' })(FormWithWrapper);
+
 class ModuleTab extends Component {
 
     state = {
         moduleInfoVisable: false,
         websiteInfoVisable: false,
         confirmLoading: false,
-        selectItem: { intro: '', sort: 0, status: 0, title: '' },
+        selectItem: { intro: '', sort: 0, status: 0, title: '', websites: [] },
         modelType: 'new'
     }
 
@@ -186,7 +214,7 @@ class ModuleTab extends Component {
                                         title={item.title}
                                         hoverable
                                         className={styles.card}
-                                        actions={[<a onClick={() => this.itemModifyClick(item)} key="option1">修改</a>, <a key="option1">配置</a>, <a onClick={() => this.itemDeleteClick(item)} key="option2">删除</a>]}
+                                        actions={[<a onClick={() => this.itemModifyClick(item)} key="option1">修改</a>, <a onClick={() => this.itemWebsiteClick(item)} key="option1">配置</a>, <a onClick={() => this.itemDeleteClick(item)} key="option2">删除</a>]}
                                     >
                                         <div>{item.intro ? item.intro : '暂无简介'}</div>
                                         <div style={{ height: 1, margin: 24, backgroundColor: 'rgb(0,0,0,0.1)' }} />
@@ -214,8 +242,38 @@ class ModuleTab extends Component {
                 >
                     <ModuleInfoConfig dispatch={dispatch} ref={ref => this.moduleInfoConfig = ref} data={this.state.selectItem} />
                 </Modal>
+
+                <Modal
+                    title={'111222'}
+                    visible={this.state.websiteInfoVisable}
+                    onOk={this.webSiteConfigOk}
+                    confirmLoading={this.state.confirmLoading}
+                    onCancel={this.websiteConfigCancel}
+                >
+                    <WebsiteInfoConfig selectItem={this.state.selectItem} />
+                </Modal>
             </div >
         );
+    }
+
+    itemWebsiteClick = (item) => {
+        console.log(item);
+        this.setState({
+            websiteInfoVisable: true,
+            selectItem: item
+        });
+    }
+
+    webSiteConfigOk = () => {
+        this.setState({
+            websiteInfoVisable: false
+        });
+    }
+
+    websiteConfigCancel = () => {
+        this.setState({
+            websiteInfoVisable: false
+        });
     }
 
     itemDeleteClick = (item) => {
@@ -274,7 +332,7 @@ class ModuleTab extends Component {
     addNewModule = () => {
         this.setState({
             moduleInfoVisable: true,
-            selectItem: { intro: '', sort: 0, status: 0, title: '' },
+            selectItem: { intro: '', sort: 0, status: 0, title: '', websites: [] },
             modelType: 'new'
         });
     }
