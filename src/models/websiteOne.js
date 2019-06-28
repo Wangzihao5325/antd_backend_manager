@@ -73,6 +73,8 @@ const Model = {
         *deleteModuleById({ payload }, { call, put }) {
             const response = yield call(deleteModuleById, payload);
             if (response.code === 1) {
+                Message.destroy();
+                Message.success('删除成功,正在更新数据...');
                 yield put({
                     type: 'getModuleList'
                 });
@@ -82,7 +84,6 @@ const Model = {
         },
         *modifyModuleInfo({ payload }, { call, put }) {
             const response = yield call(moduleInfoSubmit, payload);
-            console.log(response);
         }
     },
     reducers: {

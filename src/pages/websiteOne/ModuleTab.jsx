@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Button, Form, Card, List, Icon, Typography, Modal, Input } from 'antd';
+import { Row, Col, Button, Form, Card, List, Icon, Typography, Modal, Input, message as Message } from 'antd';
 import TableForm from '@/pages/form/advanced-form/components/TableForm';
 import styles from './style.less';
 import { submitModuleInfo } from '@/services/websiteOne';
@@ -65,7 +65,7 @@ class ModuleInfoConfig extends Component {
         }
     }
 
-    submit = () => {
+    submit = (callback) => {
         let id = this.state.data.id;
         let params = {
             title: this.state.data.title,
@@ -75,6 +75,9 @@ class ModuleInfoConfig extends Component {
         };
 
         submitModuleInfo(id, params, (e, code, message) => {
+            if (callback) {
+                callback();
+            }
             let { dispatch } = this.props;
             dispatch({
                 type: 'websiteOne/getModuleList'
@@ -165,7 +168,7 @@ class ModuleTab extends Component {
                                         title={item.title}
                                         hoverable
                                         className={styles.card}
-                                        actions={[<a onClick={() => this.itemModifyClick(item)} key="option1">修改</a>, <a key="option1">配置</a>, <a key="option2">删除</a>]}
+                                        actions={[<a onClick={() => this.itemModifyClick(item)} key="option1">修改</a>, <a key="option1">配置</a>, <a onClick={() => this.itemDeleteClick(item)} key="option2">删除</a>]}
                                     >
                                         <div>{item.intro ? item.intro : '暂无简介'}</div>
                                         <div style={{ height: 1, margin: 24, backgroundColor: 'rgb(0,0,0,0.1)' }} />
@@ -196,6 +199,15 @@ class ModuleTab extends Component {
             </div>
         );
     }
+    itemDeleteClick = (item) => {
+        Message.loading('正在删除...', 0);
+        let id = item.id;
+        const { dispatch } = this.props;
+        dispatch({
+            type: 'websiteOne/deleteModuleById',
+            payload: { id }
+        });
+    }
 
     itemModifyClick = (item) => {
         this.setState({
@@ -206,10 +218,16 @@ class ModuleTab extends Component {
 
     moduleInfoOk = () => {
         if (this.moduleInfoConfig) {
-            this.moduleInfoConfig.submit();
             this.setState({
-                moduleInfoVisable: false
-            })
+                confirmLoading: true
+            });
+            this.moduleInfoConfig.submit(() => {
+                this.setState({
+                    moduleInfoVisable: false,
+                    confirmLoading: false,
+                });
+                Message.success('修改成功，正在更新数据...');
+            });
         }
     }
 
