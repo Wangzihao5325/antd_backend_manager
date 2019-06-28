@@ -26,6 +26,11 @@ export async function deleteModuleById(payload) {
     return request.post(`${SERVICES.domain}/admin/lyf/type/delete/${id}`, { headers: { Authorization: `${SERVICES.token}` } });
 }
 
+export async function moduleInfoSubmit(payload) {
+    const { id, params } = payload;
+    return request.post(`${SERVICES.domain}/admin/lyf/type/${id}`, { headers: { Authorization: `${SERVICES.token}` }, params: params });
+}
+
 function fetchWrapper(url, formData, onSuccess, onError) {
     let fullUrl = `${SERVICES.domain}${url}`;
     let header = { Accept: 'application/json', Authorization: `${SERVICES.token}` };
@@ -77,5 +82,15 @@ export function modifyAd(payload, onSuccess, onError) {
 export function deleteAd(id, onSuccess, onError) {
     let url = `/admin/lyf/ad/delete/${id}`;
     let formData = new FormData();
+    fetchWrapper(url, formData, onSuccess, onError);
+}
+
+export function submitModuleInfo(id, params, onSuccess, onError) {
+    let url = `/admin/lyf/type/${id}`;
+    let formData = new FormData();
+    formData.append('title', params.title);
+    formData.append('intro', params.intro);
+    formData.append('status', params.status);
+    formData.append('sort', params.sort);
     fetchWrapper(url, formData, onSuccess, onError);
 }

@@ -5,6 +5,7 @@ import {
     fetchWebsiteOneAdList,
     fetchModuleList,
     deleteModuleById,
+    moduleInfoSubmit,
 } from '@/services/websiteOne';
 import { message as Message } from 'antd';
 
@@ -78,6 +79,10 @@ const Model = {
             } else {
                 Message.error('删除失败，请联系后台管理员！');
             }
+        },
+        *modifyModuleInfo({ payload }, { call, put }) {
+            const response = yield call(moduleInfoSubmit, payload);
+            console.log(response);
         }
     },
     reducers: {
