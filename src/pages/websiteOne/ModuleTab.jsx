@@ -65,6 +65,23 @@ class ModuleInfoConfig extends Component {
         }
     }
 
+    addSubmit = (callback) => {
+        let params = {
+            title: this.state.data.title,
+            intro: this.state.data.intro,
+            status: parseInt(this.state.data.status),
+            sort: parseInt(this.state.data.sort)
+        };
+        let { dispatch } = this.props;
+        dispatch({
+            type: 'websiteOne/addModule',
+            payload: params
+        });
+        if (callback) {
+            callback();
+        }
+    }
+
     submit = (callback) => {
         let id = this.state.data.id;
         let params = {
@@ -125,7 +142,8 @@ class ModuleTab extends Component {
         moduleInfoVisable: false,
         websiteInfoVisable: false,
         confirmLoading: false,
-        selectItem: {}
+        selectItem: { intro: '', sort: 0, status: 0, title: '' },
+        modelType: 'new'
     }
 
     componentDidMount() {
@@ -188,7 +206,7 @@ class ModuleTab extends Component {
                     }}
                 />
                 <Modal
-                    title="模块信息修改"
+                    title={this.state.modelType === 'new' ? '新增模块' : "模块信息修改"}
                     visible={this.state.moduleInfoVisable}
                     onOk={this.moduleInfoOk}
                     confirmLoading={this.state.confirmLoading}
@@ -196,9 +214,10 @@ class ModuleTab extends Component {
                 >
                     <ModuleInfoConfig dispatch={dispatch} ref={ref => this.moduleInfoConfig = ref} data={this.state.selectItem} />
                 </Modal>
-            </div>
+            </div >
         );
     }
+
     itemDeleteClick = (item) => {
         Message.loading('正在删除...', 0);
         let id = item.id;
@@ -212,22 +231,37 @@ class ModuleTab extends Component {
     itemModifyClick = (item) => {
         this.setState({
             moduleInfoVisable: true,
-            selectItem: item
+            selectItem: item,
+            modelType: 'modify'
         });
     }
 
     moduleInfoOk = () => {
-        if (this.moduleInfoConfig) {
-            this.setState({
-                confirmLoading: true
-            });
-            this.moduleInfoConfig.submit(() => {
+        if (this.state.modelType === 'new') {
+            if (this.moduleInfoConfig) {
                 this.setState({
-                    moduleInfoVisable: false,
-                    confirmLoading: false,
+                    confirmLoading: true
                 });
-                Message.success('修改成功，正在更新数据...');
-            });
+                this.moduleInfoConfig.addSubmit(() => {
+                    this.setState({
+                        moduleInfoVisable: false,
+                        confirmLoading: false,
+                    });
+                });
+            }
+        } else {
+            if (this.moduleInfoConfig) {
+                this.setState({
+                    confirmLoading: true
+                });
+                this.moduleInfoConfig.submit(() => {
+                    this.setState({
+                        moduleInfoVisable: false,
+                        confirmLoading: false,
+                    });
+                    Message.success('修改成功，正在更新数据...');
+                });
+            }
         }
     }
 
@@ -238,7 +272,11 @@ class ModuleTab extends Component {
     }
 
     addNewModule = () => {
-
+        this.setState({
+            moduleInfoVisable: true,
+            selectItem: { intro: '', sort: 0, status: 0, title: '' },
+            modelType: 'new'
+        });
     }
 
     handleSth = () => {

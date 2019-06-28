@@ -31,6 +31,11 @@ export async function moduleInfoSubmit(payload) {
     return request.post(`${SERVICES.domain}/admin/lyf/type/${id}`, { headers: { Authorization: `${SERVICES.token}` }, params: params });
 }
 
+export async function addModule(payload) {
+    console.log('111111');
+    return request.post(`${SERVICES.domain}/admin/lyf/type/store`, { headers: { Authorization: `${SERVICES.token}` }, params: payload, requestType: 'json' });
+}
+
 function fetchWrapper(url, formData, onSuccess, onError) {
     let fullUrl = `${SERVICES.domain}${url}`;
     let header = { Accept: 'application/json', Authorization: `${SERVICES.token}` };

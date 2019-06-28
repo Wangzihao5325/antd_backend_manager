@@ -6,6 +6,7 @@ import {
     fetchModuleList,
     deleteModuleById,
     moduleInfoSubmit,
+    addModule,
 } from '@/services/websiteOne';
 import { message as Message } from 'antd';
 
@@ -84,6 +85,17 @@ const Model = {
         },
         *modifyModuleInfo({ payload }, { call, put }) {
             const response = yield call(moduleInfoSubmit, payload);
+        },
+        *addModule({ payload }, { call, put }) {
+            const response = yield call(addModule, payload);
+            if (response.code === 1) {
+                Message.success('新增模块成功,正在更新数据...');
+                yield put({
+                    type: 'getModuleList'
+                });
+            } else {
+                Message.error('新增模块失败！');
+            }
         }
     },
     reducers: {
