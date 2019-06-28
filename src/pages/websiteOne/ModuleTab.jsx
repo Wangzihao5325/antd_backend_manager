@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Button, Form, Card, List, Icon, Typography, Modal, Input, Table, message as Message } from 'antd';
+import { Row, Col, Button, Form, Card, List, Icon, Typography, Modal, Input, Table, Divider, Popconfirm, message as Message } from 'antd';
 import TableForm from '@/pages/form/advanced-form/components/TableForm';
 import styles from './style.less';
 import { submitModuleInfo } from '@/services/websiteOne';
+import _ from 'lodash';
 
 const { Paragraph } = Typography;
 
@@ -116,49 +117,200 @@ class ModuleInfoConfig extends Component {
 
 class FormWithWrapper extends Component {
 
+    cacheOriginData = {};
+
     columns = [
         {
             title: '网站名称',
             dataIndex: 'title',
             key: 'title',
+            render: (text, record, index) => {
+                if (record.editable) {
+                    return (
+                        <Input
+                            value={text}
+                            autoFocus
+                            onChange={e => this.handleFieldChange(e, 'title', record.key)}
+                            onKeyPress={e => this.handleKeyPress(e, record.key)}
+                            placeholder="网站名称"
+                        />
+                    );
+                }
+                return text;
+            },
         },
         {
             title: '网站链接',
             dataIndex: 'href',
             key: 'href',
+            render: (text, record, index) => {
+                if (record.editable) {
+                    return (
+                        <Input
+                            value={text}
+                            autoFocus
+                            onChange={e => this.handleFieldChange(e, 'title', record.key)}
+                            onKeyPress={e => this.handleKeyPress(e, record.key)}
+                            placeholder="网站名称"
+                        />
+                    );
+                }
+                return text;
+            },
         },
         {
             title: '是否开启(1:开启 0:关闭)',
             dataIndex: 'status',
             key: 'status',
+            render: (text, record, index) => {
+                if (record.editable) {
+                    return (
+                        <Input
+                            value={text}
+                            autoFocus
+                            onChange={e => this.handleFieldChange(e, 'title', record.key)}
+                            onKeyPress={e => this.handleKeyPress(e, record.key)}
+                            placeholder="网站名称"
+                        />
+                    );
+                }
+                return text;
+            },
         },
         {
             title: '排序号',
             dataIndex: 'sort',
             key: 'sort',
+            render: (text, record, index) => {
+                if (record.editable) {
+                    return (
+                        <Input
+                            value={text}
+                            autoFocus
+                            onChange={e => this.handleFieldChange(e, 'title', record.key)}
+                            onKeyPress={e => this.handleKeyPress(e, record.key)}
+                            placeholder="网站名称"
+                        />
+                    );
+                }
+                return text;
+            },
+        }, {
+            title: '操作',
+            key: 'action',
+            render: (text, record, index) => {
+                const { loading } = this.state;
+                if (!!record.editable && loading) {
+                    return null;
+                }
+                if (record.editable) {
+                    if (record.isNew) {
+                        return (
+                            <span>
+                                <a onClick={e => this.saveRow(e, record.key)}>添加</a>
+                                <Divider type="vertical" />
+                                <Popconfirm title="是否要删除此行？" onConfirm={() => this.remove(record.key)}>
+                                    <a>删除</a>
+                                </Popconfirm>
+                            </span>
+                        );
+                    }
+                    return (
+                        <span>
+                            <a onClick={e => this.saveRow(e, record.key)}>保存</a>
+                            <Divider type="vertical" />
+                            <a onClick={e => this.cancelNew(e, record.key)}>取消</a>
+                        </span>
+                    );
+                }
+                return (
+                    <span>
+                        <a onClick={e => this.toggleEditable(e, record, index)}>编辑</a>
+                        <Divider type="vertical" />
+                        <Popconfirm title="是否要删除此行？" onConfirm={() => this.remove(record.key)}>
+                            <a>删除</a>
+                        </Popconfirm>
+                    </span>
+                );
+            },
         },
     ];
 
+    remove = () => {
+
+    }
+
+    toggleEditable = (e, item, index) => {
+        e.preventDefault();
+        this.cacheOriginData = item;
+        let idReg = item.id;
+        let { websites } = this.state;
+        let newWebsites = websites.map(item => ({ ...item }));
+        let originItem = newWebsites.filter((item) => { return item.id === idReg })[0];
+        if (originItem) {
+            originItem.editable = !originItem.editable;
+            let str = JSON.stringify(newWebsites);
+            this.setState({ websites: JSON.parse(str) });
+            this.forceUpdate();
+        }
+    }
+
     state = {
         selectItem: { intro: '', sort: 0, status: 0, title: '', websites: [] },
-        selectItemReg: { intro: '', sort: 0, status: 0, title: '', websites: [] }
+        selectItemReg: { intro: '', sort: 0, status: 0, title: '', websites: [] },
+        websites: [],
+        websitesReg: [],
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.selectItem !== prevState.dataReg) {
+        if (nextProps.selectItem !== prevState.selectItem) {
             return {
                 selectItem: nextProps.selectItem,
-                selectItemReg: nextProps.selectItem
+                selectItemReg: nextProps.selectItem,
+                websites: [...nextProps.selectItem.websites],
+                websitesReg: [...nextProps.selectItem.websites],
             }
         }
         return null;
     }
 
     render() {
-        let { websites = [] } = this.state.selectItem;
+        let { websites } = this.state;
         return (
-            <Table columns={this.columns} dataSource={websites} />
+            <div>
+                <Table
+                    columns={this.columns}
+                    dataSource={websites}
+                    pagination={false}
+                />
+                <Button
+                    style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+                    type="dashed"
+                    onClick={this.newMember}
+                    icon="plus"
+                >
+                    新增成员
+                </Button>
+            </div>
         );
+    }
+
+    newMember = () => {
+        let { websites } = this.state;
+        let newWebsite = [...websites];
+        newWebsite.push({ type_id: this.state.selectItem.type_id, href: '', title: '', status: 0, sort: 0, editable: true });
+        this.setState({
+            websites: newWebsite,
+        });
+    }
+
+    cancelNew = () => {
+        let { websites } = this.state;
+        let newWebsite = [...websites];
+        newWebsite.pop();
+        this.setState({
+            websites: newWebsite,
+        });
     }
 }
 
@@ -244,7 +396,8 @@ class ModuleTab extends Component {
                 </Modal>
 
                 <Modal
-                    title={'111222'}
+                    title={this.state.selectItem.title}
+                    width={1020}
                     visible={this.state.websiteInfoVisable}
                     onOk={this.webSiteConfigOk}
                     confirmLoading={this.state.confirmLoading}

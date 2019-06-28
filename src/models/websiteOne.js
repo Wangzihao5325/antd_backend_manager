@@ -62,7 +62,6 @@ const Model = {
         },
         *getModuleList(_, { call, put }) {
             const response = yield call(fetchModuleList);
-            console.log(response);
             let moduleData = response.result.data;
             yield put({
                 type: 'updateModuleData',

@@ -32,7 +32,6 @@ export async function moduleInfoSubmit(payload) {
 }
 
 export async function addModule(payload) {
-    console.log('111111');
     return request.post(`${SERVICES.domain}/admin/lyf/type/store`, { headers: { Authorization: `${SERVICES.token}` }, params: payload, requestType: 'json' });
 }
 
